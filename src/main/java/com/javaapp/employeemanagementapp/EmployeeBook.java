@@ -11,7 +11,7 @@ public class EmployeeBook {
     }
 
     public void addEmployee(Employee employee) {
-        String fullName = employee.getFirstName() + " " + employee.getLastName();
+        String fullName = employee.getFirstName() + employee.getLastName();
         employees.put(fullName, employee);
     }
 
