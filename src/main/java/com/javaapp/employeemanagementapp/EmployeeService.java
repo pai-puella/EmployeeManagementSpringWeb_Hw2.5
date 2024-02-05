@@ -1,6 +1,7 @@
 package com.javaapp.employeemanagementapp;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 class EmployeeService {
     private static final int MAX_EMPLOYEES = 100;
@@ -24,6 +25,14 @@ class EmployeeService {
         employees.add(employee);
 
         return employee;
+    }
+
+    public void validateData(String data) {
+        if (StringUtils.isNotBlank(data)) {
+            // Данные прошли проверку
+        } else {
+            throw new BadRequestException("Данные не могут быть пустыми");
+        }
     }
 
     public Employee removeEmployee(String firstName, String lastName, int salary, String department) {
