@@ -17,9 +17,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/add")
-    public Employee addEmployee(@RequestParam String firstName, @RequestParam String lastName) {
+    public Employee addEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam int salary, @RequestParam String department) {
         try {
-            return employeeService.addEmployee(firstName, lastName);
+            return employeeService.addEmployee(firstName, lastName, salary, department);
         } catch (EmployeeAlreadyAddedException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Employee already exists", e);
         } catch (EmployeeStorageIsFullException e) {
@@ -28,18 +28,18 @@ public class EmployeeController {
     }
 
     @GetMapping("/employee/remove")
-    public Employee removeEmployee(@RequestParam String firstName, @RequestParam String lastName) {
+    public Employee removeEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam int salary, @RequestParam String department) {
         try {
-            return employeeService.removeEmployee(firstName, lastName);
+            return employeeService.removeEmployee(firstName, lastName, salary, department);
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found", e);
         }
     }
 
     @GetMapping("/employee/find")
-    public Employee findEmployee(@RequestParam String firstName, @RequestParam String lastName) {
+    public Employee findEmployee(@RequestParam String firstName, @RequestParam String lastName, @RequestParam int salary, @RequestParam String department) {
         try {
-            return employeeService.findEmployee(firstName, lastName);
+            return employeeService.findEmployee(firstName, lastName, salary, department);
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found", e);
         }

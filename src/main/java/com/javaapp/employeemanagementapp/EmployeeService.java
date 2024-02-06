@@ -1,6 +1,7 @@
 package com.javaapp.employeemanagementapp;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 class EmployeeService {
     private static final int MAX_EMPLOYEES = 100;
@@ -10,12 +11,12 @@ class EmployeeService {
         this.employees = new ArrayList<>();
     }
 
-    public Employee addEmployee(String firstName, String lastName) {
+    public Employee addEmployee(String firstName, String lastName, int salary, String department) {
         if (employees.size() >= MAX_EMPLOYEES) {
             throw new EmployeeStorageIsFullException();
         }
 
-        Employee employee = new Employee(firstName, lastName);
+        Employee employee = new Employee(firstName, lastName, salary, department);
 
         if (employees.contains(employee)) {
             throw new EmployeeAlreadyAddedException();
@@ -26,8 +27,16 @@ class EmployeeService {
         return employee;
     }
 
-    public Employee removeEmployee(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
+    public void validateData(String data) {
+        if (StringUtils.isNotBlank(data)) {
+            // Данные прошли проверку
+        } else {
+            throw new BadRequestException("Данные не могут быть пустыми");
+        }
+    }
+
+    public Employee removeEmployee(String firstName, String lastName, int salary, String department) {
+        Employee employee = new Employee(firstName, lastName, salary, department);
         if (!employees.contains(employee)) {
             throw new EmployeeNotFoundException();
         }
@@ -35,8 +44,8 @@ class EmployeeService {
         return employee;
     }
 
-    public Employee findEmployee(String firstName, String lastName) {
-        Employee employee = new Employee(firstName, lastName);
+    public Employee findEmployee(String firstName, String lastName, int salary, String department) {
+        Employee employee = new Employee(firstName, lastName, salary, department);
         if (!employees.contains(employee)) {
             throw new EmployeeNotFoundException();
         }

@@ -2,6 +2,8 @@ package com.javaapp.employeemanagementapp;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeBook {
     private Map<String, Employee> employees;
@@ -23,6 +25,10 @@ public class EmployeeBook {
     public Employee findEmployee(String firstName, String lastName) {
         String fullName = firstName + " " + lastName;
         return employees.get(fullName);
+    }
+
+    public List<Employee> getAllEmployees() {
+        return new ArrayList<>(employees.values());
     }
 }
 
