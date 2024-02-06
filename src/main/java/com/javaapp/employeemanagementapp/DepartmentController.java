@@ -1,36 +1,61 @@
 package com.javaapp.employeemanagementapp;
 
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/departments")
+@RequestMapping("/department")
 public class DepartmentController {
-    private DepartmentService departmentService;
 
+    private final DepartmentService departmentService;
+
+    @Autowired
     public DepartmentController(DepartmentService departmentService) {
         this.departmentService = departmentService;
     }
 
-    @GetMapping("/max-salary")
-    public Employee getEmployeeWithMaxSalaryByDepartment(@RequestParam("departmentId") String departmentId) {
-        return departmentService.getEmployeeWithMaxSalaryByDepartment(departmentId);
+    @GetMapping("/{id}/employees")
+    public ResponseEntity<?> getEmployeesByDepartment(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(departmentService.getEmployeesByDepartment(id));
+        } catch (DepartmentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/min-salary")
-    public Employee getEmployeeWithMinSalaryByDepartment(@RequestParam("departmentId") String departmentId) {
-        return departmentService.getEmployeeWithMinSalaryByDepartment(departmentId);
+    @GetMapping("/{id}/salary/sum")
+    public ResponseEntity<?> getSalarySumByDepartment(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(departmentService.getSalarySumByDepartment(id));
+        } catch (DepartmentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/all")
-    public List<Employee> getAllEmployeesByDepartment(@RequestParam("departmentId") String departmentId) {
-        return departmentService.getAllEmployeesByDepartment(departmentId);
+    @GetMapping("/{id}/salary/max")
+    public ResponseEntity<?> getMaxSalaryByDepartment(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(departmentService.getMaxSalaryByDepartment(id));
+        } catch (DepartmentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/all")
-    public Map<String, List<Employee>> getAllEmployeesByDepartments() {
-        return departmentService.getAllEmployeesByDepartments();
+    @GetMapping("/{id}/salary/min")
+    public ResponseEntity<?> getMinSalaryByDepartment(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(departmentService.getMinSalaryByDepartment(id));
+        } catch (DepartmentNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/employees")
+    public ResponseEntity<?> getEmployeesGroupedByDepartment() {
+        return ResponseEntity.ok(departmentService.getEmployeesGroupedByDepartment());
     }
 }
-

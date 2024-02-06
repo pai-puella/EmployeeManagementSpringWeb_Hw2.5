@@ -1,45 +1,102 @@
 package com.javaapp.employeemanagementapp;
 
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Map;
-import java.util.Comparator;
 
 @Service
 public class DepartmentService {
-    private EmployeeBook employeeBook;
 
-    public DepartmentService(EmployeeBook employeeBook) {
-        this.employeeBook = employeeBook;
+    private final EmployeeService employeeService;
+    private final List<Department> departments;
+
+    public DepartmentService(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+        departments = new ArrayList<>();
     }
 
-    public Employee getEmployeeWithMaxSalaryByDepartment(String department) {
-        List<Employee> employees = employeeBook.getAllEmployees();
-        return employees.stream()
-                .filter(employee -> employee.getDepartment().equals(department))
-                .max(Comparator.comparingInt(Employee::getSalary))
-                .orElse(null);
+    public List<Department> getAllDepartments() {
+        return departments;
     }
 
-    public Employee getEmployeeWithMinSalaryByDepartment(String department) {
-        List<Employee> employees = employeeBook.getAllEmployees();
-        return employees.stream()
-                .filter(employee -> employee.getDepartment().equals(department))
-                .min(Comparator.comparingInt(Employee::getSalary))
-                .orElse(null);
+    public Department getDepartmentById(int id) {
+        for (Department department : departments) {
+            if (department.id() == id) {
+                return department;
+            }
+        }
+        return null; // Если отдел с указанным id не найден
     }
 
-    public List<Employee> getAllEmployeesByDepartment(String department) {
-        List<Employee> employees = employeeBook.getAllEmployees();
-        return employees.stream()
-                .filter(employee -> employee.getDepartment().equals(department))
-                .collect(Collectors.toList());
+    public List<Employee> getEmployeesByDepartment(int departmentId) throws DepartmentNotFoundException {
+        Department department = getDepartmentById(departmentId);
+
+        return employeeService.getEmployeesByDepartment(department);
     }
 
-    public Map<String, List<Employee>> getAllEmployeesByDepartments() {
-        List<Employee> employees = employeeBook.getAllEmployees();
-        return employees.stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment));
+    public int getSalarySumByDepartment(int departmentId) throws DepartmentNotFoundException {
+        Department department = getDepartmentById(departmentId);
+
+        List<Employee> employees = employeeService.getEmployeesByDepartment(department);
+
+        int sum = 0;
+        for (Employee employee : employees) {
+            sum += employee.getSalary();
+        }
+
+        return sum;
+    }
+
+    public Employee getMaxSalaryByDepartment(int departmentId) throws DepartmentNotFoundException {
+        Department department = getDepartmentById(departmentId);
+
+        List<Employee> employees = employeeService.getEmployeesByDepartment(department);
+
+        Employee maxSalaryEmployee = null;
+        int maxSalary = 0;
+
+        for (Employee employee : employees) {
+            if (employee.getSalary() > maxSalary) {
+                maxSalary = employee.getSalary();
+                maxSalaryEmployee = employee;
+            }
+        }
+
+        return maxSalaryEmployee;
+    }
+
+    public Employee getMinSalaryByDepartment(int departmentId) throws DepartmentNotFoundException {
+        Department department = getDepartmentById(departmentId);
+
+        List<Employee> employees = employeeService.getEmployeesByDepartment(department);
+
+        Employee minSalaryEmployee = null;
+        int minSalary = Integer.MAX_VALUE;
+
+        for (Employee employee : employees) {
+            if (employee.getSalary() < minSalary) {
+                minSalary = employee.getSalary();
+                minSalaryEmployee = employee;
+            }
+        }
+
+        return minSalaryEmployee;
+    }
+
+
+
+    public Map<Department, List<Employee>> getEmployeesGroupedByDepartment() {
+        List<Department> departments = getAllDepartments();
+        Map<Department, List<Employee>> employeesByDepartment = new HashMap<>();
+
+        for (Department department : departments) {
+            List<Employee> employees = employeeService.getEmployeesByDepartment(department);
+            employeesByDepartment.put(department, employees);
+        }
+
+        return employeesByDepartment;
     }
 }
