@@ -6,9 +6,11 @@ import org.apache.commons.lang3.StringUtils;
 class EmployeeService {
     private static final int MAX_EMPLOYEES = 100;
     private List<Employee> employees;
+    private DepartmentService departmentService;
 
     public EmployeeService() {
         this.employees = new ArrayList<>();
+        this.departmentService = departmentService;
     }
 
     public Employee addEmployee(String firstName, String lastName, int salary, String department) {
@@ -54,5 +56,15 @@ class EmployeeService {
 
     public List<Employee> getAllEmployees() {
         return employees;
+    }
+
+    public List<Employee> getEmployeesByDepartment(Department department) {
+        List<Employee> employeesByDepartment = new ArrayList<>();
+        for (Employee employee : employees) {
+            if (employee.getDepartment().equals(department.name())) {
+                employeesByDepartment.add(employee);
+            }
+        }
+        return employeesByDepartment;
     }
 }
